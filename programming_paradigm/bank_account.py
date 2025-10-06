@@ -1,28 +1,37 @@
-import sys
-from bank_account import BankAccount
+# programming_paradigm/bank_account.py
 
-def main():
-    account = BankAccount(100)  # Example starting balance
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <command>:<amount>")
-        print("Commands: deposit, withdraw, display")
-        sys.exit(1)
+class BankAccount:
+    def __init__(self, balance=0.0):
+        """Initialize a new bank account with an optional starting balance."""
+        if balance < 0:
+            raise ValueError("Initial balance cannot be negative.")
+        self.__balance = balance  # Private attribute for encapsulation
 
-    command, *params = sys.argv[1].split(':')
-    amount = float(params[0]) if params else None
+    def deposit(self, amount):
+        """Deposit a positive amount into the account."""
+        if amount <= 0:
+            print("Deposit amount must be positive.")
+            return
+        self.__balance += amount
+        print(f"Deposited ${amount:.2f}")
 
-    if command == "deposit" and amount is not None:
-        account.deposit(amount)
-        print(f"Deposited: ${amount}")
-    elif command == "withdraw" and amount is not None:
-        if account.withdraw(amount):
-            print(f"Withdrew: ${amount}")
-        else:
+    def withdraw(self, amount):
+        """Withdraw a positive amount if sufficient balance is available."""
+        if amount <= 0:
+            print("Withdrawal amount must be positive.")
+            return False
+        if amount > self.__balance:
             print("Insufficient funds.")
-    elif command == "display":
-        account.display_balance()
-    else:
-        print("Invalid command.")
+            return False
+        self.__balance -= amount
+        print(f"Withdrew ${amount:.2f}")
+        return True
 
-if __name__ == "__main__":
-    main()
+    def display_balance(self):
+        """Display the current account balance."""
+        print(f"Current balance: ${self.__balance:.2f}")
+
+    def get_balance(self):
+        """Getter method for the balance (if needed)."""
+        return self.__balance
+
